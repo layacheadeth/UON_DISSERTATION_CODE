@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+<style>
+    .comment {
+        display: none;
+       
+
+    }
+   
+
+</style>
+
+
+{% block content %}
+<h1 align="center">{% block header %}Posts{% endblock %}</h1>
+
+
+<div id="posts">
+    {% for post in posts %}
+    <div class="card border-dark">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <a href="/posts/{{post.user.username}}">{{post.user.username}}</a>
+            {% if user.id == post.author %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" >
+    
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+    
+        </div>
+        <div class="card-body d-flex justify-content-between">
+            <div class="card-text">
+            {{post.text}}
+            </div>
+            
+            <div class="card-text">
+        <img src = "{{post.text_link}}" width="400px" height="300px" style="border: 3px solid white"/>
+    </div>
+    <br />
+
+    
+    </div>
+
+   
+
+    <br/>
+<div class="collapse" id="comments-{{post.id}}">
+    <div class="card">
+        <div class="card-body" id ="comments-expanded-{{post.id}}">
+
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" >
+    
+                </button>
+
+                <select id="filter">
+                    <option value="all">Show all</option>
+                    <option value="deceptive">Deceptive</option>
+                    <option value="truthful">Truthful</option>
+                  </select>
+                <!--<ul class="dropdown-menu">-->
+                    
+                    <!--<li>-->
+                        <!--<a href="/classify/deceptive" class="dropdown-item">Deceptive</a>-->
+                        <!--<a href="#" class="dropdown-item">Deceptive</a>-->
+
+                        <!--<a href="/classify/truthful" class="dropdown-item">Truthful</a>-->
+                        <!--<a href="#" class="dropdown-item">Truthful</a>-->
+
+                        
+
+
+                    <!--</li>-->
+                <!--</ul>-->
+            </div>
+
+
+    {% for comment in post.comments %}
+    <div class="d-flex justify-content-between align-items-center" id="comments">
+        <div class="comment" class="d-flex justify-content-between align-items-center" >
+        <a href="/posts/{{comment.user.username}}">{{comment.user.username}}</a>
+    : {{comment.text}} | {{comment.label}}
+    {% if user.id==comment.author or user.id==post.author %}
+    <button class="delete-btn" style="background-color:aqua;" ><a href="/delete-comment/{{comment.id}}" class="dropdown-item">Delete</a></button>
+    {% endif %}
+    <br>
+    <small class="date">{{comment.date_created}}</small>
+
+    
+
+</div>
+
+
+   
+
+
+ 
+</div>
+
+{% endfor %}
+</div>
+</div>
+</div>
+<p class="card-text">
+{% if post.comments|length > 0 %}
+<!-- <a data-bs-toggle="collapse" href="#comments-{{post.id}}" role="button"> -->
+<a href="#" class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#comments-{{post.id}}" role="button" aria-expanded="false">
+<small>View {{post.comments|length}} Comments</small>
+</a>
+
+{% else %}
+<small class="text-muted">No Comments</small>
+{% endif %}
+<br/>
+</p>
+<br />
+    <form class="input-group mb-3" method="POST" action="/create-comment/{{post.id}}">
+        <input
+            type="text"
+            id="text"
+            name="text"
+            class="form-control"
+            placeholder="Comment Something!"
+        />
+        <button type="submit" class="btn btn-primary">Comment</button>
+    </form>
+    <div class="card-footer text-muted">
+        {{post.date_created}}
+    </div>
+    
+    </div>
+    <br/>
+
+
+
+    {% endfor %}
+
+</div>
+    {% block footer %}
+
+    <div align="center">
+        <a href="/create-post">
+        <button type="button" class="btn btn-primary btn-lg">Create a Post</button>
+    </a>
+    </div>
+
+   
+    {% endblock %}
+    <script>
+        const filter = document.getElementById("filter");
+        const comments = document.querySelectorAll(".comment");
+        
+        filter.addEventListener("change", function() {
+          const selectedValue = this.value;
+          
+          comments.forEach(function(comment) {
+            if (selectedValue === "all") {
+              comment.style.display = "block";
+            } else if (comment.innerText.includes(selectedValue)) {
+              comment.style.display = "block";
+            } else {
+              comment.style.display = "none";
+            }
+          });
+        });
+        </script>
+{% endblock %}
