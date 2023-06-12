@@ -6,5 +6,8 @@ The dataset was acquired from Kaggle (a TripAdvisor dataset that includes a trut
 
 https://www.kaggle.com/datasets/rtatman/deceptive-opinion-spam-corpus
 
+Read here for full project detail:
+
+https://www.researchgate.net/publication/371307608_Deceptive_review_detection_using_Deep_Learning
 
 
